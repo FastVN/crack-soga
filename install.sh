@@ -8,7 +8,7 @@ plain='\033[0m'
 cur_dir=$(pwd)
 
 # check root
-[[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} Bạn phải sử dụng người dùng root để chạy tập lệnh này! \n" && exit 1
+[[ $EUID -ne 0 ]] && echo -e "${red}Lỗi!：${plain} Bạn phải sử dụng người dùng root để chạy tập lệnh này! \n" && exit 1
 
 # check os
 if [[ -f /etc/redhat-release ]]; then
@@ -46,15 +46,15 @@ fi
 
 if [[ x"${release}" == x"centos" ]]; then
     if [[ ${os_version} -le 6 ]]; then
-        echo -e "${red}请使用 CentOS 7 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Vui lòng sử dụng CentOS 7 hoặc hệ thống phiên bản cao hơn! ${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"ubuntu" ]]; then
     if [[ ${os_version} -lt 16 ]]; then
-        echo -e "${red}请使用 Ubuntu 16 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Vui lòng sử dụng Ubuntu 16 hoặc hệ thống phiên bản cao hơn! ${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"debian" ]]; then
     if [[ ${os_version} -lt 8 ]]; then
-        echo -e "${red}请使用 Debian 8 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Vui lòng sử dụng Debian 8 hoặc hệ thống phiên bản cao hơn! ${plain}\n" && exit 1
     fi
 fi
 
