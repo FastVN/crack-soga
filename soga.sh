@@ -8,7 +8,7 @@ plain='\033[0m'
 version="v1.0.0"
 
 # check root
-[[ $EUID -ne 0 ]] && echo -e "${red}错误: ${plain} 必须使用root用户运行此脚本！\n" && exit 1
+[[ $EUID -ne 0 ]] && echo -e "${red}Lỗi!：${plain} Bạn phải sử dụng người dùng root để chạy tập lệnh này! \n" && exit 1
 
 # check os
 if [[ -f /etc/redhat-release ]]; then
@@ -26,7 +26,7 @@ elif cat /proc/version | grep -Eqi "ubuntu"; then
 elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
     release="centos"
 else
-    echo -e "${red}未检测到系统版本，请联系脚本作者！${plain}\n" && exit 1
+    echo -e "${red}Phiên bản hệ thống không được phát hiện, vui lòng liên hệ với tác giả kịch bản! ${plain}\n" && exit 1
 fi
 
 os_version=""
@@ -41,15 +41,15 @@ fi
 
 if [[ x"${release}" == x"centos" ]]; then
     if [[ ${os_version} -le 6 ]]; then
-        echo -e "${red}请使用 CentOS 7 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Vui lòng sử dụng CentOS 7 hoặc hệ thống phiên bản cao hơn! ${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"ubuntu" ]]; then
     if [[ ${os_version} -lt 16 ]]; then
-        echo -e "${red}请使用 Ubuntu 16 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Vui lòng sử dụng Ubuntu 16 hoặc hệ thống phiên bản cao hơn! ${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"debian" ]]; then
     if [[ ${os_version} -lt 8 ]]; then
-        echo -e "${red}请使用 Debian 8 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Vui lòng sử dụng Debian 8 hoặc hệ thống phiên bản cao hơn! ${plain}\n" && exit 1
     fi
 fi
 
@@ -70,7 +70,7 @@ confirm() {
 }
 
 confirm_restart() {
-    confirm "是否重启soga" "y"
+    confirm "Có khởi động lại soga không?" "y"
     if [[ $? == 0 ]]; then
         restart
     else
@@ -79,12 +79,12 @@ confirm_restart() {
 }
 
 before_show_menu() {
-    echo && echo -n -e "${yellow}按回车返回主菜单: ${plain}" && read temp
+    echo && echo -n -e "${yellow}Nhấn enter để quay lại menu chính: ${plain}" && read temp
     show_menu
 }
 
 install() {
-    bash <(curl -Ls https://raw.githubusercontent.com/RManLuo/crack-soga-v2ray/master/install.sh)
+    bash < <(curl -Ls https://raw.githubusercontent.com/FastVN/crack-soga/main/install.sh)
     if [[ $? == 0 ]]; then
         if [[ $# == 0 ]]; then
             start
@@ -96,21 +96,21 @@ install() {
 
 update() {
     if [[ $# == 0 ]]; then
-        echo && echo -n -e "输入指定版本(默认最新版): " && read version
+        echo && echo -n -e "Nhập phiên bản được chỉ định (phiên bản mới nhất mặc định): " && read version
     else
         version=$2
     fi
-#    confirm "本功能会强制重装当前最新版，数据不会丢失，是否继续?" "n"
+#    confirm "Chức năng này sẽ buộc cài đặt lại phiên bản mới nhất hiện tại, dữ liệu sẽ không bị mất, có tiếp tục không?" "n"
 #    if [[ $? != 0 ]]; then
-#        echo -e "${red}已取消${plain}"
+#        echo -e "${red}Đã hủy${plain}"
 #        if [[ $1 != 0 ]]; then
 #            before_show_menu
 #        fi
 #        return 0
 #    fi
-    bash <(curl -Ls https://raw.githubusercontent.com/RManLuo/crack-soga-v2ray/master/install.sh) $version
+    bash < <(curl -Ls https://raw.githubusercontent.com/FastVN/crack-soga/main/install.sh) $version
     if [[ $? == 0 ]]; then
-        echo -e "${green}更新完成，已自动重启 soga，请使用 soga status 查看启动情况${plain}"
+        echo -e "${green}Hoàn thành cập nhật，tự động khởi động lại soga，vui lòng sử dụng soga status kiểm tra tình hình khởi động${plain}"
         exit
     fi
 
@@ -120,7 +120,7 @@ update() {
 }
 
 uninstall() {
-    confirm "确定要卸载 soga 吗?" "n"
+    confirm "Chắc chắn để gỡ cài đặt soga ?" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -136,7 +136,7 @@ uninstall() {
     rm /usr/local/soga/ -rf
 
     echo ""
-    echo -e "卸载成功，如果你想删除此脚本，则退出脚本后运行 ${green}rm /usr/bin/soga -f${plain} 进行删除"
+    echo -e "Gỡ cài đặt thành công, nếu bạn muốn xóa tập lệnh này, hãy thoát tập lệnh và chạy ${green}rm /usr/bin/soga -f${plain} Xóa bỏ"
     echo ""
 
     if [[ $# == 0 ]]; then
@@ -148,15 +148,15 @@ start() {
     check_status
     if [[ $? == 0 ]]; then
         echo ""
-        echo -e "${green}soga已运行，无需再次启动，如需重启请选择重启${plain}"
+        echo -e "${green}soga đã chạy rồi, không cần khởi động lại, nếu cần khởi động lại, vui lòng chọn khởi động lại${plain}"
     else
         systemctl start soga
         sleep 2
         check_status
         if [[ $? == 0 ]]; then
-            echo -e "${green}soga 启动成功，请使用 soga status 查看启动情况${plain}"
+            echo -e "${green}soga Bắt đầu thành công, vui lòng sử dụng soga status kiểm tra tình hình khởi động${plain}"
         else
-            echo -e "${red}soga可能启动失败，请稍后使用 soga log 查看日志信息${plain}"
+            echo -e "${red}Soga có thể không khởi động được, vui lòng sử dụng nhật ký soga để xem thông tin nhật ký${plain}"
         fi
     fi
 
@@ -170,9 +170,9 @@ stop() {
     sleep 2
     check_status
     if [[ $? == 1 ]]; then
-        echo -e "${green}soga 停止成功${plain}"
+        echo -e "${green}Đã dừng soga thành công${plain}"
     else
-        echo -e "${red}soga停止失败，可能是因为停止时间超过了两秒，请稍后查看日志信息${plain}"
+        echo -e "${red}Không dừng được Soga. Có thể do thời gian dừng vượt quá hai giây. Vui lòng kiểm tra thông tin nhật ký.${plain}"
     fi
 
     if [[ $# == 0 ]]; then
@@ -185,9 +185,9 @@ restart() {
     sleep 2
     check_status
     if [[ $? == 0 ]]; then
-        echo -e "${green}soga 重启成功，请使用 soga status 查看启动情况${plain}"
+        echo -e "${green}Soga đã khởi động lại thành công, vui lòng sử dụng trạng thái soga để kiểm tra tình hình khởi động${plain}"
     else
-        echo -e "${red}soga可能启动失败，请稍后使用 soga log 查看日志信息${plain}"
+        echo -e "${red}Soga có thể không khởi động được, vui lòng sử dụng nhật ký soga để xem thông tin nhật ký${plain}"
     fi
     if [[ $# == 0 ]]; then
         before_show_menu
@@ -204,9 +204,9 @@ status() {
 enable() {
     systemctl enable soga
     if [[ $? == 0 ]]; then
-        echo -e "${green}soga 设置开机自启成功${plain}"
+        echo -e "${green}soga được thiết lập để bắt đầu thành công sau khi khởi động${plain}"
     else
-        echo -e "${red}soga 设置开机自启失败${plain}"
+        echo -e "${red}soga không đặt được chế độ tự khởi động sau khi bật nguồn${plain}"
     fi
 
     if [[ $# == 0 ]]; then
@@ -217,9 +217,9 @@ enable() {
 disable() {
     systemctl disable soga
     if [[ $? == 0 ]]; then
-        echo -e "${green}soga 取消开机自启成功${plain}"
+        echo -e "${green}Hủy khởi động và tự khởi động soga thành công${plain}"
     else
-        echo -e "${red}soga 取消开机自启失败${plain}"
+        echo -e "${red}soga hủy khởi động và tự khởi động lỗi${plain}"
     fi
 
     if [[ $# == 0 ]]; then
@@ -238,10 +238,10 @@ install_bbr() {
     bash <(curl -L -s https://github.com/sprov065/blog/raw/master/bbr.sh)
     if [[ $? == 0 ]]; then
         echo ""
-        echo -e "${green}安装 bbr 成功，请重启服务器${plain}"
+        echo -e "${green}Cài đặt thành công bbr, vui lòng khởi động lại máy chủ${plain}"
     else
         echo ""
-        echo -e "${red}下载 bbr 安装脚本失败，请检查本机能否连接 Github${plain}"
+        echo -e "${red}Không tải được tập lệnh cài đặt bbr, vui lòng kiểm tra xem máy có thể kết nối với Github không${plain}"
     fi
 
     before_show_menu
@@ -251,11 +251,11 @@ update_shell() {
     wget -O /usr/bin/soga -N --no-check-certificate https://github.com/RManLuo/crack-soga-v2ray/raw/master/soga.sh
     if [[ $? != 0 ]]; then
         echo ""
-        echo -e "${red}下载脚本失败，请检查本机能否连接 Github${plain}"
+        echo -e "${red}Không tải được script xuống, vui lòng kiểm tra xem máy có thể kết nối với Github không${plain}"
         before_show_menu
     else
         chmod +x /usr/bin/soga
-        echo -e "${green}升级脚本成功，请重新运行脚本${plain}" && exit 0
+        echo -e "${green}Tập lệnh nâng cấp thành công, vui lòng chạy lại tập lệnh${plain}" && exit 0
     fi
 }
 
@@ -285,7 +285,7 @@ check_uninstall() {
     check_status
     if [[ $? != 2 ]]; then
         echo ""
-        echo -e "${red}soga已安装，请不要重复安装${plain}"
+        echo -e "${red}soga đã được cài đặt, vui lòng không cài đặt nhiều lần${plain}"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -299,7 +299,7 @@ check_install() {
     check_status
     if [[ $? == 2 ]]; then
         echo ""
-        echo -e "${red}请先安装soga${plain}"
+        echo -e "${red}Vui lòng cài đặt soga trước${plain}"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -313,29 +313,29 @@ show_status() {
     check_status
     case $? in
         0)
-            echo -e "soga状态: ${green}已运行${plain}"
+            echo -e "Trạng thái soga: ${green}Đã chạy${plain}"
             show_enable_status
             ;;
         1)
-            echo -e "soga状态: ${yellow}未运行${plain}"
+            echo -e "Trạng thái soga: ${yellow}Không chạy${plain}"
             show_enable_status
             ;;
         2)
-            echo -e "soga状态: ${red}未安装${plain}"
+            echo -e "Trạng thái soga: ${red}Chưa cài đặt${plain}"
     esac
 }
 
 show_enable_status() {
     check_enabled
     if [[ $? == 0 ]]; then
-        echo -e "是否开机自启: ${green}是${plain}"
+        echo -e "Có tự động khởi động sau khi khởi động không: ${green}Có${plain}"
     else
-        echo -e "是否开机自启: ${red}否${plain}"
+        echo -e "Có tự động khởi động sau khi khởi động không: ${red}Không${plain}"
     fi
 }
 
 show_soga_version() {
-    echo -n "soga 版本："
+    echo -n "Phiên bản soga："
     /usr/local/soga/soga -v
     echo ""
     if [[ $# == 0 ]]; then
@@ -344,48 +344,48 @@ show_soga_version() {
 }
 
 show_usage() {
-    echo "soga 管理脚本使用方法: "
+    echo "soga Cách sử dụng tập lệnh quản lý: "
     echo "------------------------------------------"
-    echo "soga              - 显示管理菜单 (功能更多)"
-    echo "soga start        - 启动 soga"
-    echo "soga stop         - 停止 soga"
-    echo "soga restart      - 重启 soga"
-    echo "soga status       - 查看 soga 状态"
-    echo "soga enable       - 设置 soga 开机自启"
-    echo "soga disable      - 取消 soga 开机自启"
-    echo "soga log          - 查看 soga 日志"
-    echo "soga update       - 更新 soga"
-    echo "soga update x.x.x - 更新 soga 指定版本"
-    echo "soga install      - 安装 soga"
-    echo "soga uninstall    - 卸载 soga"
-    echo "soga version      - 查看 soga 版本"
+    echo "soga              - Menu quản lý màn hình (nhiều chức năng hơn)"
+    echo "soga start        - Khởi động soga"
+    echo "soga stop         - Dừng soga"
+    echo "soga restart      - Khởi động lại soga"
+    echo "soga status       - Xem trạng thái soga"
+    echo "soga enable       - Thiết lập soga tự khởi động"
+    echo "soga disable      - Hủy bỏ soga tự khởi động"
+    echo "soga log          - Xem nhật ký soga"
+    echo "soga update       - Cập nhật soga"
+    echo "soga update x.x.x - Cập nhật phiên bản đã chỉ định của soga"
+    echo "soga install      - Cài đặt soga"
+    echo "soga uninstall    - Gỡ cài đặt soga"
+    echo "soga version      - Xem phiên bản soga"
     echo "------------------------------------------"
 }
 
 show_menu() {
     echo -e "
-  ${green}soga 后端管理脚本，${plain}${red}不适用于docker${plain}
---- https://github.com/RManLuo/crack-soga-v2ray ---
-  ${green}0.${plain} 退出脚本
+  ${green}Tập lệnh quản lý back-end soga，${plain}${red}不适用于docker${plain}
+--- https://github.com/FastVN/crack-soga-v2ray ---
+  ${green}0.${plain} Tập lệnh thoát
 ————————————————
-  ${green}1.${plain} 安装 soga
-  ${green}2.${plain} 更新 soga
-  ${green}3.${plain} 卸载 soga
+  ${green}1.${plain} Cài đặt soga
+  ${green}2.${plain} Cập nhật soga
+  ${green}3.${plain} Gỡ cài đặt soga
 ————————————————
-  ${green}4.${plain} 启动 soga
-  ${green}5.${plain} 停止 soga
-  ${green}6.${plain} 重启 soga
-  ${green}7.${plain} 查看 soga 状态
-  ${green}8.${plain} 查看 soga 日志
+  ${green}4.${plain} Bắt đầu soga
+  ${green}5.${plain} Dừng soga
+  ${green}6.${plain} Khởi động lại soga
+  ${green}7.${plain} Xem trạng thái soga
+  ${green}8.${plain} Xem nhật ký soga
 ————————————————
-  ${green}9.${plain} 设置 soga 开机自启
- ${green}10.${plain} 取消 soga 开机自启
+  ${green}9.${plain} Đặt soga để bắt đầu tự động sau khi khởi động
+ ${green}10.${plain} Hủy khởi động soga sau khi khởi động
 ————————————————
- ${green}11.${plain} 一键安装 bbr (最新内核)
- ${green}12.${plain} 查看 soga 版本
+ ${green}11.${plain} 一Key cài đặt bbr (hạt nhân mới nhất)
+ ${green}12.${plain} Xem phiên bản soga
  "
     show_status
-    echo && read -p "请输入选择 [0-12]: " num
+    echo && read -p "Vui lòng nhập lựa chọn [0-12]: " num
 
     case "${num}" in
         0) exit 0
@@ -414,7 +414,7 @@ show_menu() {
         ;;
         12) check_install && show_soga_version
         ;;
-        *) echo -e "${red}请输入正确的数字 [0-12]${plain}"
+        *) echo -e "${red}Vui lòng nhập số chính xác [0-12]${plain}"
         ;;
     esac
 }
